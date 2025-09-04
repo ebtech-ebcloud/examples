@@ -42,7 +42,7 @@ python modeladd.py \
 ## 模型推理
 启动fastapi
 ```
-python chat_server.py
+python chat_api.py
 ```
 
 开发机调用接口
