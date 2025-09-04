@@ -17,7 +17,7 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
-## 训练模型
+## 模型训练
 以 **Deepseek-LLM** 微调示例
 请确保此次微调 **显存至少有 15GB**，可使用 **4090** 进行测试
 
@@ -28,8 +28,8 @@ pip install --upgrade torch torchvision torchaudio --index-url https://download.
 `/public/github/EmoLLM/`
 
 运行 `run_train.sh` 进行训练
-等待训练结束，训练过程演示可以在Swanlab上看，会输出如下图片
-
+等待训练结束，训练过程演示可以在Swanlab上看
+如果没有Swanlab账号，先进行注册
 
 训练结束之后，需要把保存下来的模型与预训练模型做一个合并
 ```
@@ -39,3 +39,20 @@ python modeladd.py \
   --save_path /data/output/deepseek-sft-merged
 ```
 
+## 模型推理
+启动fastapi
+```
+python chat_server.py
+```
+
+开发机调用接口
+```
+curl -X POST "http://127.0.0.1:8000/chat" \
+     -H "Content-Type: application/json" \
+     -d '{"text": "你好"}'
+```
+
+支持多轮对话形式，如果要重新开始新的对话，调用 /reset 接口清空历史：
+```
+curl -X POST "http://127.0.0.1:8000/reset"
+```
