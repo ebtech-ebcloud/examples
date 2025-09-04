@@ -22,6 +22,14 @@ pip install --upgrade torch torchvision torchaudio --index-url https://download.
 请确保此次微调 **显存至少有 15GB**，可使用 **4090** 进行测试
 
 模型及数据集地址
+
 `/public/huggingface-models/deepseek-ai/deepseek-llm-7b-chat/`
+
 `/public/github/EmoLLM/`
+
+运行 `run_train.sh` 进行训练
+等待训练结束，训练过程演示可以在Swanlab上看，会输出如下图片
+
+
+训练结束之后，需要把保存下来的模型与预训练模型做一个合并
 
