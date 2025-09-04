@@ -187,30 +187,52 @@ def load_model(args, train_dataset, data_collator):
 # 处理数据
 def process_data(data: dict, tokenizer, max_seq_length):
     """
-    把 conversation 里的 human/assistant 拼接成训练样本
-    格式: "Human: ... \n\nAssistant: ...<eos>"
+    处理 conversation，将 system/input/output 拼接成训练样本
+    格式：
+      System: ...
+      Human: ...
+      Assistant: ... <eos>
     """
     input_ids, attention_mask, labels = [], [], []
 
+    # system 信息（只在第一轮添加）
+    system_text = ""
+    first_conv = data["conversation"][0] if data["conversation"] else {}
+    if "system" in first_conv:
+        system_text = f"System: {first_conv['system'].strip()}\n\n"
+        sys_tokens = tokenizer(system_text, add_special_tokens=False)
+        input_ids += sys_tokens["input_ids"]
+        attention_mask += sys_tokens["attention_mask"]
+        labels += [-100] * len(sys_tokens["input_ids"])  # system 不参与 loss
+
     for conv in data["conversation"]:
-        text = f"Human: {conv['human'].strip()}\n\nAssistant: {conv['assistant'].strip()}{tokenizer.eos_token}"
-        tokenized = tokenizer(
-            text,
-            truncation=True,
-            max_length=max_seq_length,
-            padding=False,
-            add_special_tokens=False,
-        )
-        input_ids += tokenized["input_ids"]
-        attention_mask += tokenized["attention_mask"]
-        labels += tokenized["input_ids"]
+        human_text = conv.get("human", conv.get("input", "")).strip()
+        assistant_text = conv.get("assistant", conv.get("output", "")).strip()
+
+        # 拼接 human + assistant
+        text = f"{system_text}Human: {human_text}\n\nAssistant: {assistant_text}{tokenizer.eos_token}"
+        tokens = tokenizer(text, add_special_tokens=False, truncation=True, max_length=max_seq_length)
+
+        # labels 只计算 assistant 部分
+        human_tokens = tokenizer(f"{system_text}Human: {human_text}\n\nAssistant:", add_special_tokens=False)
+        labels += [-100] * len(human_tokens["input_ids"]) + tokens["input_ids"][len(human_tokens["input_ids"]):]
+
+        input_ids += tokens["input_ids"]
+        attention_mask += tokens["attention_mask"]
+
+        # system 只加在第一轮
+        system_text = ""
+
+    # 最终截断
+    input_ids = input_ids[:max_seq_length]
+    attention_mask = attention_mask[:max_seq_length]
+    labels = labels[:max_seq_length]
 
     return {
         "input_ids": input_ids,
         "attention_mask": attention_mask,
-        "labels": labels
+        "labels": labels,
     }
-
 
 # 训练部分
 def main():
@@ -222,7 +244,11 @@ def main():
     print("*****************处理数据*************************")
     # 处理数据
     # 获得数据
-    data = pd.read_json(args.train_file, lines=True)
+    # 获得数据
+    with open(args.train_file, "r", encoding="utf-8") as f:
+        data_list = json.load(f)  # 读取整个 JSON 数组
+    data = pd.DataFrame(data_list)  # 转成 DataFrame
+    # data = pd.read_json(args.train_file, lines=True)
     train_ds = Dataset.from_pandas(data)
     train_dataset = train_ds.map(process_data,
                                  fn_kwargs={"tokenizer": tokenizer, "max_seq_length": args.max_seq_length},
