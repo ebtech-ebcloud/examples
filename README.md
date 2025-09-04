@@ -32,4 +32,10 @@ pip install --upgrade torch torchvision torchaudio --index-url https://download.
 
 
 训练结束之后，需要把保存下来的模型与预训练模型做一个合并
+```
+python modeladd.py \
+  --base_model /data/deepseek-llm-7b-chat \
+  --adapter_model /data/output/deepseek-7b-lora \
+  --save_path /data/output/deepseek-sft-merged
+```
 
