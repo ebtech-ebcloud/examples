@@ -44,6 +44,7 @@ python modeladd.py \
 ```
 python chat_api.py
 ```
+>端口默认8000，如果需要修改，添加参--port 8080，调用的时候注意使用对应端口
 
 开发机调用接口
 ```
@@ -51,6 +52,7 @@ curl -X POST "http://127.0.0.1:8000/chat" \
      -H "Content-Type: application/json" \
      -d '{"text": "你好"}'
 ```
+
 
 支持多轮对话形式，如果要重新开始新的对话，调用 /reset 接口清空历史：
 ```
