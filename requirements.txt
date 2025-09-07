@@ -10,3 +10,4 @@ loguru>=0.7.0
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
 swanlab>=0.2.0
+swanlab[dashboard]
