@@ -1,0 +1,26 @@
+
+torch>=2.0.0
+torchvision
+opencv-python
+transformers>=4.37.0
+accelerate>=0.27.0
+numpy>=1.22.3
+diffusers>=0.26.3
+safetensors>=0.4.2
+# 基础依赖
+numpy==1.26.4
+scipy==1.11.4
+pandas==2.1.4
+# 模型 & 数据集
+modelscope==1.9.5
+datasets==2.13.0
+pyarrow==12.0.1
+# Web & 可视化
+gradio==4.29.0
+# 常用工具
+tqdm==4.66.4
+requests==2.31.0
+addict==2.4.0
+# 图像处理
+opencv-python==4.9.0.80
+Pillow==10.2.0
