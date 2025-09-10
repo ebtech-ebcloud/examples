@@ -15,7 +15,7 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 如果版本过低，升级 PyTorch
 ```
-pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 ## 模型训练
 以 **Deepseek-LLM** 微调示例
