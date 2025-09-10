@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
+import json
 from transformers import AutoModelForCausalLM, GenerationConfig
 from modelscope import AutoTokenizer
 import torch
@@ -49,7 +50,7 @@ def chat_endpoint():
     data = request.json
     text = data.get("text", "")
     reply = session.chat(text)
-    return jsonify({"reply": reply})
+    return Response(json.dumps({"reply": reply}, ensure_ascii=False), mimetype="application/json")
 
 @app.route("/reset", methods=["POST"])
 def reset_endpoint():
