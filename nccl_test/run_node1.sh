@@ -5,7 +5,7 @@
 export NCCL_IB_DISABLE=0  # 启用IB
 export NCCL_IB_HCA=mlx5_100,mlx5_101,mlx5_102,mlx5_103,mlx5_104,mlx5_105,mlx5_106,mlx5_107  # 指定IB设备
 export NCCL_IB_GID_INDEX=3
-export NCCL_SOCKET_IFNAME=eth0  # 或您的IB网络接口名
+export NCCL_SOCKET_IFNAME=eth0  # Bootstrap网络接口
 export NCCL_IB_TIMEOUT=22
 export NCCL_IB_RETRY_CNT=7
 
